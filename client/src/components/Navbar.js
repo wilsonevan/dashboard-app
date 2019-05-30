@@ -4,6 +4,7 @@ import styled from "styled-components";
 // import "./HomeNav.css";
 import { Dropdown, Icon } from "semantic-ui-react";
 import { GlobalColors, GlobalSizes } from "../styles/GlobalStyles";
+import {AuthConsumer} from '../providers/AuthProvider'
 // import Logo from "../images/logo_transparent_updated.png";
 
 const Navbar = props => {
@@ -35,112 +36,135 @@ const Navbar = props => {
     return MenuItem === activeItem ? ActiveMenuItem : null;
   };
 
-  const centerNavItems = textColor => {
-    return (
-      <>
-        <CenterMenu>
-          <NavLink to="/use-cases">
-            <MenuItem as={isActive(1)} onClick={() => activateItem(1)}>
-              <Item textColor={textColor}>Use Cases</Item>
-            </MenuItem>
-          </NavLink>
-          <NavLink to="/docs">
-            <MenuItem as={isActive(2)} onClick={() => activateItem(2)}>
-              <Item textColor={textColor}>Docs</Item>
-            </MenuItem>
-          </NavLink>
-          <NavLink to="/mission">
-            <MenuItem as={isActive(3)} onClick={() => activateItem(3)}>
-              <Item textColor={textColor}>Our Mission</Item>
-            </MenuItem>
-          </NavLink>
-          <NavLink to="/contact">
-            <MenuItem as={isActive(4)} onClick={() => activateItem(4)}>
-              <Item textColor={textColor}>Contact</Item>
-            </MenuItem>
-          </NavLink>
-        </CenterMenu>
-      </>
-    );
-  };
-
-  // const rightNavItems = textColor => {
+  // const centerNavItems = textColor => {
   //   return (
   //     <>
-  //       <RightMenu>
-  //         <NavLink to="/dashboard" onClick={() => activateItem(1)}>
-  //           <MenuItem as={isActive(1)}>
-  //             <Item textColor={textColor}>
-  //             </Item>
+  //       <CenterMenu>
+  //         <NavLink to="/use-cases">
+  //           <MenuItem as={isActive(1)} onClick={() => activateItem(1)}>
+  //             <Item textColor={textColor}>Use Cases</Item>
   //           </MenuItem>
   //         </NavLink>
-  //         <NavLink to="/login">
-  //           <MenuItem>
-  //             <Item textColor={textColor}>Logout</Item>
+  //         <NavLink to="/docs">
+  //           <MenuItem as={isActive(2)} onClick={() => activateItem(2)}>
+  //             <Item textColor={textColor}>Docs</Item>
   //           </MenuItem>
   //         </NavLink>
-  //       </RightMenu>
+  //         <NavLink to="/mission">
+  //           <MenuItem as={isActive(3)} onClick={() => activateItem(3)}>
+  //             <Item textColor={textColor}>Our Mission</Item>
+  //           </MenuItem>
+  //         </NavLink>
+  //         <NavLink to="/contact">
+  //           <MenuItem as={isActive(4)} onClick={() => activateItem(4)}>
+  //             <Item textColor={textColor}>Contact</Item>
+  //           </MenuItem>
+  //         </NavLink>
+  //       </CenterMenu>
   //     </>
   //   );
   // };
 
-  const compactNavMenu = () => {
-    return (
-      <>
-        <CompactNavContainer>
-          <Dropdown
-            button
-            className="icon"
-            size="huge"
-            direction="left"
-            fluid
-            icon="bars"
-          >
-            <Dropdown.Menu>
-              <Dropdown.Item>
-                <NavLink to="/">
-                  <Item textColor={GlobalColors.PrimaryGrey}>Home</Item>
-                </NavLink>
-              </Dropdown.Item>
-              <Dropdown.Item>
-                <NavLink to="/use-cases">
-                  <Item textColor={GlobalColors.PrimaryGrey}>Use Cases</Item>
-                </NavLink>
-              </Dropdown.Item>
-              <Dropdown.Item>
-                <NavLink to="/docs">
-                  <Item textColor={GlobalColors.PrimaryGrey}>Docs</Item>
-                </NavLink>
-              </Dropdown.Item>
-              <Dropdown.Item>
-                <NavLink to="/mission">
-                  <Item textColor={GlobalColors.PrimaryGrey}>Our Mission</Item>
-                </NavLink>
-              </Dropdown.Item>
-              <Dropdown.Item>
-                <NavLink to="/contact">
-                  <Item textColor={GlobalColors.PrimaryGrey}>Contact</Item>
-                </NavLink>
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-        </CompactNavContainer>
-      </>
-    );
+  const rightNavItems = () => {
+    const {
+      auth: { user, handleLogout },
+      history
+    } = props;
+
+    if (user) {
+      return (
+        <>
+          <RightMenu>
+            <NavLink to="/dashboard" onClick={() => activateItem(1)}>
+              <MenuItem as={isActive(1)}>
+                <Item>{user.admin ? "Admin Dashboard" : "Dashboard"}</Item>
+              </MenuItem>
+            </NavLink>
+            <NavLink to="/login" onClick={() => handleLogout(history)}>
+              <MenuItem>
+                <Item>Logout</Item>
+              </MenuItem>
+            </NavLink>
+          </RightMenu>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <RightMenu>
+            <NavLink to="/login" onClick={() => activateItem(3)}>
+              <MenuItem as={isActive(3)}>
+                <Item>Login</Item>
+              </MenuItem>
+            </NavLink>
+            <NavLink to="/register" onClick={() => activateItem(4)}>
+              <MenuItem as={isActive(4)}>
+                <Item>Register</Item>
+              </MenuItem>
+            </NavLink>
+          </RightMenu>
+        </>
+      );
+    }
   };
+
+  // const compactNavMenu = () => {
+  //   return (
+  //     <>
+  //       <CompactNavContainer>
+  //         <Dropdown
+  //           button
+  //           className="icon"
+  //           size="huge"
+  //           direction="left"
+  //           fluid
+  //           icon="bars"
+  //         >
+  //           <Dropdown.Menu>
+  //             <Dropdown.Item>
+  //               <NavLink to="/">
+  //                 <Item textColor={GlobalColors.PrimaryGrey}>Home</Item>
+  //               </NavLink>
+  //             </Dropdown.Item>
+  //             <Dropdown.Item>
+  //               <NavLink to="/use-cases">
+  //                 <Item textColor={GlobalColors.PrimaryGrey}>Use Cases</Item>
+  //               </NavLink>
+  //             </Dropdown.Item>
+  //             <Dropdown.Item>
+  //               <NavLink to="/docs">
+  //                 <Item textColor={GlobalColors.PrimaryGrey}>Docs</Item>
+  //               </NavLink>
+  //             </Dropdown.Item>
+  //             <Dropdown.Item>
+  //               <NavLink to="/mission">
+  //                 <Item textColor={GlobalColors.PrimaryGrey}>Our Mission</Item>
+  //               </NavLink>
+  //             </Dropdown.Item>
+  //             <Dropdown.Item>
+  //               <NavLink to="/contact">
+  //                 <Item textColor={GlobalColors.PrimaryGrey}>Contact</Item>
+  //               </NavLink>
+  //             </Dropdown.Item>
+  //           </Dropdown.Menu>
+  //         </Dropdown>
+  //       </CompactNavContainer>
+  //     </>
+  //   );
+  // };
 
   return (
     <NavContainer>
       <NavLink to="/">
         <LogoContainer onClick={() => activateItem(0)}>
           {/* <MyLogo src={Logo} /> */}
-          <CompanyName>The Code Learning Project</CompanyName>
+          <CompanyName>My Dashboard</CompanyName>
         </LogoContainer>
       </NavLink>
       <NavMenu>
-        {compactNavMenu()}
-        {centerNavItems(props.textColor)}
-        {/* {rightNavItems(props.textColor)} */}
+        {/* {compactNavMenu()} */}
+        {/* {centerNavItems(props.textColor)} */}
+        {rightNavItems(props.textColor)}
       </NavMenu>
     </NavContainer>
   );
@@ -150,6 +174,8 @@ const NavContainer = styled.div`
   position: absolute;
   top: 0rem;
   width: 100%;
+  display: flex;
+  justify-content: space-between;
 `;
 
 const NavMenu = styled.div`
@@ -230,6 +256,7 @@ const CompanyName = styled.h1`
 
 const RightMenu = styled.div`
   position: relative;
+  right: 0;
   text-align: center;
   border-bottom: 5px !important;
   display: flex;
@@ -253,4 +280,8 @@ const CenterMenu = styled.div`
   }
 `;
 
-export default Navbar;
+const ConnectedNavbar = props => (
+  <AuthConsumer>{value => <Navbar {...props} auth={value} />}</AuthConsumer>
+);
+
+export default ConnectedNavbar;
